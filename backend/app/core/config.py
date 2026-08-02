@@ -12,6 +12,11 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "supersecretkey-change-in-production"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7 # 7 days
     
+    # GitHub OAuth
+    GITHUB_CLIENT_ID: str = "your-client-id"
+    GITHUB_CLIENT_SECRET: str = "your-client-secret"
+    GITHUB_REDIRECT_URI: str = "http://localhost:8000/api/v1/auth/github/callback"
+    
     # Database
     DATABASE_URL: str = "sqlite+aiosqlite:///./test.db" # Default for local/tests
     

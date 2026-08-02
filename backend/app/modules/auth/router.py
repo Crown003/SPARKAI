@@ -33,3 +33,23 @@ async def login(
     
     access_token = create_access_token(subject=str(user.id))
     return Token(access_token=access_token, token_type="bearer")
+
+from fastapi.responses import RedirectResponse
+from app.core.config import settings
+
+@router.get("/github/login", response_class=RedirectResponse)
+async def github_login() -> str:
+    """Redirect to GitHub for OAuth login."""
+    return f"https://github.com/login/oauth/authorize?client_id={settings.GITHUB_CLIENT_ID}&redirect_uri={settings.GITHUB_REDIRECT_URI}&scope=user:email"
+
+@router.get("/github/callback", response_model=Token)
+async def github_callback(
+    code: str,
+    db: AsyncSession = Depends(get_db)
+) -> Token:
+    """Handle GitHub OAuth callback and exchange code for access token."""
+    auth_service = AuthService(db)
+    user = await auth_service.authenticate_github_user(code)
+    
+    access_token = create_access_token(subject=str(user.id))
+    return Token(access_token=access_token, token_type="bearer")
