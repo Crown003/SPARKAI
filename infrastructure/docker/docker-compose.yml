@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # -----------------------------------------------------
+  # PostgreSQL Database (Used by Backend)
+  # -----------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: spark_ai_dev_postgres
+    environment:
+      POSTGRES_USER: spark_dev_user
+      POSTGRES_PASSWORD: spark_dev_password
+      POSTGRES_DB: spark_ai_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - spark_ai_postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spark_dev_user -d spark_ai_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # -----------------------------------------------------
+  # Redis Cache & Broker (Used by Backend & Celery Workers)
+  # -----------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: spark_ai_dev_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - spark_ai_redis_data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # -----------------------------------------------------
+  # Qdrant Vector Database (Used by AI Engine)
+  # -----------------------------------------------------
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: spark_ai_dev_qdrant
+    ports:
+      - "6333:6333" # HTTP
+      - "6334:6334" # gRPC
+    volumes:
+      - spark_ai_qdrant_data:/qdrant/storage
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:6333/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  spark_ai_postgres_data:
+  spark_ai_redis_data:
+  spark_ai_qdrant_data:
