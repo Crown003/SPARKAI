@@ -8,9 +8,9 @@ Always adhere to these standards when generating code for this repository.
 We use a unified monorepo structure. All services must be contained within their respective top-level directories:
 
 - `/backend/` -> The core FastAPI application (Orchestrator).
-- `/frontend/` -> (Planned) The web interface for students and educators.
-- `/analysis-engine/` -> (Planned) Celery workers handling static analysis (AST, linters, cyclomatic complexity).
-- `/ai-engine/` -> (Planned) Celery workers handling LLM-powered RAG, engineering graph reasoning, and vector search.
+- `/frontend/` -> The web interface for students and educators (Next.js).
+- `/analysis-engine/` -> Celery workers handling static analysis (AST, linters, cyclomatic complexity).
+- `/ai-engine/` -> Celery workers handling LLM-powered RAG, engineering graph reasoning, and vector search.
 - `/infrastructure/docker/` -> Shared docker orchestration (`docker-compose.yml`) for local dev (Postgres, Redis, Qdrant).
 - `/docs/` -> Project documentation.
 
@@ -18,13 +18,26 @@ We use a unified monorepo structure. All services must be contained within their
 
 ## 2. Tech Stack & Conventions
 
-### Backend (`/backend/`)
+### Backend & DevOps (`/backend/`, `/infrastructure/`)
 - **Framework**: FastAPI (Python 3.12+).
 - **Package Manager**: `uv` (Fastest Python package installer and resolver).
 - **Database**: PostgreSQL (managed via SQLAlchemy `asyncpg` async sessions). For testing, fallback is `sqlite+aiosqlite`.
 - **Migrations**: Alembic (async configured).
 - **Authentication**: JWT Access Tokens via OAuth2 (GitHub OAuth implemented). Passwords hashed via `passlib` & `bcrypt==3.2.2`.
 - **Environment**: Managed via `pydantic-settings`. Always inject environment variables via `.env`.
+
+### Frontend (`/frontend/`)
+- **Framework**: Next.js (App Router preferred) with React.
+- **Styling**: ask for design from the dev, they will give refference and then start from that.
+- **State Management**: React Context or Zustand (avoid Redux unless strictly necessary).
+- **API Communication**: Fetch API or Axios talking to the Backend FastAPI endpoints.
+
+### AI Engine (`/ai-engine/`)
+- **Framework**: Python 3.12+ worker scripts managed by Celery.
+- **LLM Orchestration**: LangGraph for multi-agent reasoning over codebases.
+- **Vector Database**: Qdrant (via `qdrant-client`).
+- **Embeddings**: OpenAI or local models (ensure modularity so we can swap them).
+- **Execution Rule**: This engine does NOT expose HTTP endpoints. It listens to the Redis job queue, processes the graph, and saves results to the database.
 
 ### Environment Toggles
 We use a flag-based environment system to easily switch between Local development and Cloud Production (`ENVIRONMENT=development` vs `ENVIRONMENT=production`). When in production, infrastructure will point to cloud-managed PostgreSQL and Redis.

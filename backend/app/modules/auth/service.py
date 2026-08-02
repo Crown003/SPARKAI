@@ -14,7 +14,7 @@ class AuthService:
         
         if not user:
             raise SparkAIException(message="Incorrect email or password", status_code=401)
-        if not user.hashed_password or not verify_password(password, user.hashed_password):
+        if not user.hashed_password or not verify_password(password, str(user.hashed_password)):
             raise SparkAIException(message="Incorrect email or password", status_code=401)
             
         return user
