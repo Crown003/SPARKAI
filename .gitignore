@@ -32,3 +32,6 @@ coverage/
 # Build
 dist/
 build/
+
+#Private
+.agent/
