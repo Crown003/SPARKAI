@@ -51,7 +51,7 @@ def clone_repository(repo_url: str, submission_id: str) -> Path:
             submission_id=submission_id,
             path=str(target_dir),
         )
-        shutil.rmtree(target_dir)
+        shutil.rmtree(target_dir, ignore_errors=True)
 
     logger.info(
         "Cloning repository",

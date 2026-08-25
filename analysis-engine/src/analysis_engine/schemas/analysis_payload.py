@@ -17,7 +17,6 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-
 # ------------------------------------------------------------------ #
 # Complexity sub-schema (from radon cc / mi / raw)
 # ------------------------------------------------------------------ #
@@ -125,6 +124,9 @@ class AnalysisPayload(BaseModel):
     maintainability: MaintainabilityMetrics = Field(default_factory=MaintainabilityMetrics)
     security: SecurityMetrics = Field(default_factory=SecurityMetrics)
     raw_metrics: RawMetrics = Field(default_factory=RawMetrics)
+
+    # Source code contents mapped by relative file path (for semantic chunking)
+    source_files: dict[str, str] = Field(default_factory=dict)
 
     # Any additional metadata the analysis tasks want to attach
     extra: dict[str, Any] = Field(default_factory=dict)

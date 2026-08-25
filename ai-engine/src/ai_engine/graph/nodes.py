@@ -27,7 +27,6 @@ from ai_engine.graph.report_schema import FALLBACK_REPORT, ReportSchema
 from ai_engine.graph.state import RAGState
 from ai_engine.vector_store.qdrant_store import QdrantStore
 
-
 # ------------------------------------------------------------------ #
 # Shared singletons — initialised once per worker process
 # ------------------------------------------------------------------ #
@@ -77,8 +76,8 @@ def _get_llm() -> ChatOllama:
 
 _QUERY_TEMPLATE = (
     "Analyse the engineering readiness of the repository: {repo_url}. "
-    "Evaluate cyclomatic complexity, security vulnerabilities, "
-    "maintainability index, and code volume metrics."
+    "Evaluate code logic, feature implementations, cyclomatic complexity, "
+    "security vulnerabilities, maintainability index, and overall architecture."
 )
 
 
@@ -120,7 +119,7 @@ def retrieve_context(state: RAGState) -> dict:
 
     chunks = _get_qdrant().search(
         query_vector=query_vector,
-        top_k=4,  # We have 4 chunks per submission, so top_k=4 retrieves all of them
+        top_k=15,  # Retrieve metric summaries AND top relevant code snippets
         submission_id=submission_id,
     )
 
@@ -138,7 +137,8 @@ def retrieve_context(state: RAGState) -> dict:
 # ------------------------------------------------------------------ #
 
 _SYSTEM_PROMPT = """You are an expert software engineering assessor.
-You analyse static code metrics and produce a structured Engineering Readiness Report.
+You analyse static code metrics and actual code snippets to produce a structured Engineering Readiness Report.
+Do not just repeat metrics; provide deep insights on code logic, features, and security flaws based on the provided source code.
 You must respond with valid JSON only — no markdown, no explanation, just the JSON object.
 The JSON must conform exactly to the schema provided."""
 

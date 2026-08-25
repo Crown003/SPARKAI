@@ -17,6 +17,7 @@ dependencies = [
     # LLM Orchestration
     "langgraph>=0.2.70",
     "langchain-core>=0.3.0",
+    "langchain-text-splitters>=0.3.0",
     # Local Ollama (LLM + Embeddings)
     "langchain-ollama>=0.2.0",
     # Google Gemini (free-tier embeddings alternative — no credit card required)

@@ -59,11 +59,55 @@ class AnalysisChunker:
             self._maintainability_chunk(payload, submission_id, repo_url),
             self._raw_metrics_chunk(payload, submission_id, repo_url),
         ]
+        
+        # Extract and semantically chunk the source files if present
+        source_files = payload.get("source_files", {})
+        if source_files:
+            chunks.extend(self._semantic_code_chunks(source_files, submission_id, repo_url))
+            
         return chunks
 
     # ---------------------------------------------------------------- #
     # Private chunk builders
     # ---------------------------------------------------------------- #
+
+    def _semantic_code_chunks(
+        self, source_files: dict[str, str], submission_id: str, repo_url: str
+    ) -> list[EmbeddingChunk]:
+        from langchain_text_splitters import Language, RecursiveCharacterTextSplitter
+        
+        splitter = RecursiveCharacterTextSplitter.from_language(
+            language=Language.PYTHON,
+            chunk_size=1000,
+            chunk_overlap=200,
+        )
+        
+        code_chunks = []
+        for file_path, content in source_files.items():
+            try:
+                # Split the code semantically based on Python AST (classes/functions)
+                texts = splitter.split_text(content)
+                for i, text_chunk in enumerate(texts):
+                    # Format chunk so the LLM knows what file it came from
+                    formatted_text = f"File: {file_path}\nCode:\n{text_chunk}"
+                    code_chunks.append(
+                        EmbeddingChunk(
+                            chunk_id=f"{submission_id}::code::{file_path}::{i}",
+                            text=formatted_text,
+                            metadata={
+                                "submission_id": submission_id,
+                                "repo_url": repo_url,
+                                "category": "source_code",
+                                "file_path": file_path,
+                                "chunk_index": i,
+                            }
+                        )
+                    )
+            except Exception as exc:
+                import logging
+                logging.getLogger(__name__).warning(f"Failed to chunk {file_path}: {exc}")
+                
+        return code_chunks
 
     def _complexity_chunk(
         self, payload: dict, submission_id: str, repo_url: str

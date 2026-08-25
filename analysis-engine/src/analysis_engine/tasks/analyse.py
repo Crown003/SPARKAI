@@ -28,7 +28,6 @@ from analysis_engine.schemas.analysis_payload import (
     SecurityMetrics,
 )
 
-
 # ------------------------------------------------------------------ #
 # Internal helpers
 # ------------------------------------------------------------------ #
@@ -59,6 +58,24 @@ def _collect_python_files(repo_path: Path) -> list[Path]:
         if not any(part in skip_dirs for part in p.parts):
             files.append(p)
     return files
+
+
+def _collect_source_files(repo_path: Path, max_file_size: int = 1024 * 1024) -> dict[str, str]:
+    """
+    Read contents of all relevant python files.
+    Skips files larger than max_file_size to prevent memory bloat.
+    """
+    files = _collect_python_files(repo_path)
+    source_files = {}
+    for p in files:
+        if p.stat().st_size <= max_file_size:
+            try:
+                # Store relative to repo_path
+                rel_path = p.relative_to(repo_path).as_posix()
+                source_files[rel_path] = p.read_text(encoding="utf-8")
+            except Exception as exc:
+                logger.warning(f"Could not read source file {p}", error=str(exc))
+    return source_files
 
 
 # ------------------------------------------------------------------ #
@@ -239,6 +256,7 @@ def run_static_analysis(repo_path: Path, submission_id: str, repo_url: str) -> A
     maintainability = _analyse_maintainability(repo_path)
     security = _analyse_security(repo_path)
     raw = _analyse_raw_metrics(repo_path)
+    source_files = _collect_source_files(repo_path)
 
     payload = AnalysisPayload(
         submission_id=submission_id,
@@ -247,6 +265,7 @@ def run_static_analysis(repo_path: Path, submission_id: str, repo_url: str) -> A
         maintainability=maintainability,
         security=security,
         raw_metrics=raw,
+        source_files=source_files,
     )
 
     logger.info(
