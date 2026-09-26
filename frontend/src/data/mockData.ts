@@ -1,0 +1,186 @@
+import { QuickStat, MetricCardData, AnalysisItem, ProgressBreakdown } from "@/types/dashboard";
+
+export const mockQuickStats: QuickStat[] = [
+  {
+    id: "loc",
+    label: "Lines of Code",
+    value: "1.2K",
+    icon: "code",
+    color: "emerald",
+  },
+  {
+    id: "contributors",
+    label: "Contributors",
+    value: "5",
+    icon: "users",
+    color: "purple",
+  },
+  {
+    id: "commits",
+    label: "Commits",
+    value: "23",
+    icon: "git-commit",
+    color: "blue",
+  },
+  {
+    id: "issues",
+    label: "Open Issues",
+    value: "3",
+    icon: "shield-alert",
+    color: "rose",
+  },
+];
+
+export const mockMetricCards: MetricCardData[] = [
+  {
+    id: "projects",
+    title: "Projects",
+    count: 12,
+    change: "↑ 3 this week",
+    isPositive: true,
+    sparkline: [4, 6, 5, 8, 7, 10, 12],
+    color: "emerald",
+    icon: "folder",
+  },
+  {
+    id: "issues",
+    title: "Issues",
+    count: 7,
+    change: "↓ 2 this week",
+    isPositive: false,
+    sparkline: [12, 10, 11, 8, 9, 6, 7],
+    color: "rose",
+    icon: "shield-alert",
+  },
+  {
+    id: "reports",
+    title: "Reports",
+    count: 18,
+    change: "↑ 4 this week",
+    isPositive: true,
+    sparkline: [8, 9, 11, 10, 14, 15, 18],
+    color: "green",
+    icon: "file-text",
+  },
+  {
+    id: "analyses",
+    title: "Analyses",
+    count: 32,
+    change: "↑ 6 this week",
+    isPositive: true,
+    sparkline: [14, 18, 16, 22, 20, 26, 32],
+    color: "purple",
+    icon: "pie-chart",
+  },
+];
+
+export const mockAnalyses: AnalysisItem[] = [
+  {
+    id: "ana-1",
+    repoName: "spark-ai / backend",
+    organization: "SPARK AI",
+    date: "May 26, 2025",
+    score: 86,
+    iconType: "code",
+    status: "Completed",
+    metrics: {
+      cyclomaticComplexity: 4.2,
+      testCoverage: 88,
+      maintainabilityIndex: 91,
+      securityVulnerabilities: 0,
+      astNodes: 1420,
+    },
+    recommendations: [
+      "Modularize the OAuth callback handler in app.modules.auth",
+      "Add asyncpg connection pool health checks",
+      "Great test coverage across the repository parser!",
+    ],
+  },
+  {
+    id: "ana-2",
+    repoName: "ecommerce-platform",
+    organization: "ShopEase",
+    date: "May 25, 2025",
+    score: 72,
+    iconType: "cart",
+    status: "Needs Review",
+    metrics: {
+      cyclomaticComplexity: 8.7,
+      testCoverage: 64,
+      maintainabilityIndex: 75,
+      securityVulnerabilities: 2,
+      astNodes: 3890,
+    },
+    recommendations: [
+      "Refactor deeply nested payment gateway switch statements",
+      "Address 2 high-severity JWT algorithm confusion vulnerabilities",
+      "Increase unit test coverage in checkout state machine",
+    ],
+  },
+  {
+    id: "ana-3",
+    repoName: "ml-model-service",
+    organization: "ML Service",
+    date: "May 24, 2025",
+    score: 79,
+    iconType: "cpu",
+    status: "Completed",
+    metrics: {
+      cyclomaticComplexity: 5.1,
+      testCoverage: 76,
+      maintainabilityIndex: 82,
+      securityVulnerabilities: 0,
+      astNodes: 2150,
+    },
+    recommendations: [
+      "Implement model checkpoint caching with Redis",
+      "Add input validation schema using Pydantic V2",
+    ],
+  },
+  {
+    id: "ana-4",
+    repoName: "mobile-app",
+    organization: "Mobile Kit",
+    date: "May 24, 2025",
+    score: 68,
+    iconType: "mobile",
+    status: "In Progress",
+    metrics: {
+      cyclomaticComplexity: 9.4,
+      testCoverage: 52,
+      maintainabilityIndex: 69,
+      securityVulnerabilities: 1,
+      astNodes: 4500,
+    },
+    recommendations: [
+      "Optimize bundle size and dynamic imports for screens",
+      "Reduce cyclomatic complexity in navigation router",
+    ],
+  },
+  {
+    id: "ana-5",
+    repoName: "data-pipeline",
+    organization: "DataFlow",
+    date: "May 23, 2025",
+    score: 85,
+    iconType: "database",
+    status: "Completed",
+    metrics: {
+      cyclomaticComplexity: 3.8,
+      testCoverage: 84,
+      maintainabilityIndex: 89,
+      securityVulnerabilities: 0,
+      astNodes: 1980,
+    },
+    recommendations: [
+      "Pipeline backpressure handling is well-engineered",
+      "Consider indexing Cassandra lookup keys for query optimization",
+    ],
+  },
+];
+
+export const mockProgressData: ProgressBreakdown = {
+  completed: 41,
+  inProgress: 35,
+  pending: 24,
+};
