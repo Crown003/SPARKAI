@@ -328,7 +328,7 @@ button {
 .step-card p { max-width: 205px; margin: 0 auto; color: #7c878c; font-size: 8px; line-height: 1.65; }
 .step-arrow { position: absolute; z-index: 2; top: 50%; right: -17px; color: var(--coral); background: #f8f6f1; transform: translateY(-50%); }
 
-.dashboard-section { padding-top: 101px; padding-bottom: 99px; }
+.dashboard-section { padding-top: 101px; padding-bottom: 99px; background: #f8f6f1; }
 .dashboard-intro { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .dashboard-intro h2 { margin-top: 16px; }
 .dashboard-intro > p { max-width: 430px; margin: 12px 0 13px; color: #7b868d; font-size: 11px; line-height: 1.8; }
